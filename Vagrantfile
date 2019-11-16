@@ -6,7 +6,6 @@ ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 Vagrant.configure(2) do |config|
 
   # Kubernetes Master Server
-  config.vm.provision "shell", path: "bootstrap.sh"
   config.vm.define "kmaster" do |kmaster|
     kmaster.vm.box = "centos/7"
     kmaster.vm.hostname = "kmaster.example.com"
@@ -16,6 +15,7 @@ Vagrant.configure(2) do |config|
       v.memory = 2048
       v.cpus = 2
     end
+    kmaster.vm.provision "shell", path: "bootstrap.sh"
     kmaster.vm.provision "shell", path: "bootstrap_kmaster.sh"
   end
 
@@ -23,7 +23,6 @@ Vagrant.configure(2) do |config|
 
   # Kubernetes Worker Nodes
   (1..NodeCount).each do |i|
-    config.vm.provision "shell", path: "bootstrap.sh"
     config.vm.define "kworker#{i}" do |workernode|
       workernode.vm.box = "centos/7"
       workernode.vm.hostname = "kworker#{i}.example.com"
@@ -33,7 +32,8 @@ Vagrant.configure(2) do |config|
         v.memory = 1024
         v.cpus = 1
       end
-      workernode.vm.provision "shell", path: "bootstrap_kworker.sh"
+     workernode.vm.provision "shell", path: "bootstrap.sh"
+     workernode.vm.provision "shell", path: "bootstrap_kworker.sh"
     end
   end
 

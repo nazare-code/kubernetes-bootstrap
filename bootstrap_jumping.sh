@@ -63,7 +63,7 @@ data:
     - name: default
       protocol: layer2
       addresses:
-      - 172.42.42.230-172.42.42.250
+      - 192.168.192.230-192.168.192.250
 EOF
 echo "[TASK 9] Install nginx-ingress"
 #install nginx-ingress
