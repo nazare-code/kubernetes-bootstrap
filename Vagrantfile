@@ -47,6 +47,6 @@ Vagrant.configure(2) do |config|
         v.memory = 2048
         v.cpus = 2
       end
-      node.vm.provision "shell", path: "bootstrap_jumping.sh"
+      node.vm.provision "shell", path: "bootstrap_jumping.sh", privileged: false
       end
 end
