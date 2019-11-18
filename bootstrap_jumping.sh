@@ -75,6 +75,7 @@ EOF
 
 #install nginx-ingress
 echo "[TASK 9] Install nginx-ingress"
+sleep 2m
 helm install --name nginx-ingress stable/nginx-ingress
 
 echo "Ready..."
