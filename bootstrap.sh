@@ -4,6 +4,7 @@
 echo "[TASK 1] Update /etc/hosts file"
 cat >>/etc/hosts<<EOF
 192.168.192.10 jumpingvm.example.com jumpingvm
+192.168.192.10 gitlab.example.com gitlab
 192.168.192.100 kmaster.example.com kmaster
 192.168.192.101 kworker1.example.com kworker1
 192.168.192.102 kworker2.example.com kworker2

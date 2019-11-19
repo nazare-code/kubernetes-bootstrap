@@ -4,6 +4,7 @@
 echo "[TASK 1] Update /etc/hosts file"
 sudo bash -c "cat >>/etc/hosts<<EOF
 192.168.192.10 jumping.example.com jumpingvm
+192.168.192.10 gitlab.example.com gitlab
 192.168.192.100 kmaster.example.com kmaster
 192.168.192.101 kworker1.example.com kworker1
 192.168.192.102 kworker2.example.com kworker2
@@ -73,9 +74,29 @@ data:
       - 192.168.192.230-192.168.192.250
 EOF
 
+#install docker engine
+echo "[TASK 9] Install docker engine"
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y >/dev/null 2>&1
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - >/dev/null 2>&1
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" >/dev/null 2>&1
+sudo apt-get update >/dev/null 2>&1
+sudo apt-get install docker-ce -y >/dev/null 2>&1
+sudo systemctl enable docker >/dev/null 2>&1
+
+#install gitlab container
+echo "[TASK 10] Install gitlab container"
+sudo docker run --detach \
+  --hostname gitlab.example.com \
+  --publish 443:443 --publish 80:80 --publish 22222:22 \
+  --name gitlab \
+  --restart always \
+  --volume /srv/gitlab/config:/etc/gitlab \
+  --volume /srv/gitlab/logs:/var/log/gitlab \
+  --volume /srv/gitlab/data:/var/opt/gitlab \
+  gitlab/gitlab-ce:latest >/dev/null 2>&1
+
 #install nginx-ingress
-echo "[TASK 9] Install nginx-ingress"
-sleep 2m
+echo "[TASK 11] Install nginx-ingress"
 helm install --name nginx-ingress stable/nginx-ingress
 
 echo "Ready..."

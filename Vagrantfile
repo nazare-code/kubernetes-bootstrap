@@ -44,7 +44,7 @@ Vagrant.configure(2) do |config|
       node.vm.network "private_network", ip: "192.168.192.10"
       node.vm.provider "virtualbox" do |v|
         v.name = "jumpingvm"
-        v.memory = 2048
+        v.memory = 4096
         v.cpus = 2
       end
       node.vm.provision "shell", path: "bootstrap_jumping.sh", privileged: false
