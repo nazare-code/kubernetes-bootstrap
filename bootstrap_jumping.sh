@@ -4,7 +4,7 @@
 echo "[TASK 1] Update /etc/hosts file"
 sudo bash -c "cat >>/etc/hosts<<EOF
 192.168.192.10 jumping.example.com jumpingvm
-192.168.192.10 gitlab.example.com gitlab
+192.168.192.10 gitea.example.com gitea
 192.168.192.100 kmaster.example.com kmaster
 192.168.192.101 kworker1.example.com kworker1
 192.168.192.102 kworker2.example.com kworker2
@@ -117,6 +117,13 @@ services:
       - "2221:22"
 EOF
 sudo docker-compose up -d >/dev/null 2>&1
+cat <<EOF > post_install_gitea.sh 
+sed -i 's/SSH_DOMAIN       = localhost/SSH_DOMAIN       = gitea.example.com/g' /home/vagrant/gitea/gitea/conf/app.ini
+sed -i 's/ROOT_URL         = http:\/\/localhost:3000\//ROOT_URL         = http:\/\/gitea.example.com\//g' /home/vagrant/gitea/gitea/conf/app.ini
+sed -i 's/DOMAIN           =/DOMAIN           = example.com/g' /home/vagrant/gitea/gitea/conf/app.ini
+sudo docker-compose stop
+sudo docker-compose up -d
+EOF
 
 #install nginx-ingress
 echo "[TASK 11] Install nginx-ingress"
