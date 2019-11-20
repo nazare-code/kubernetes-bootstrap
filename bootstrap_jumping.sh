@@ -113,7 +113,7 @@ services:
     ports:
       - "3000:3000"
       - "222:22"
-      - "8080:3000"
+      - "80:3000"
       - "2221:22"
 EOF
 sudo docker-compose up -d >/dev/null 2>&1
