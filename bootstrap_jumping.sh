@@ -83,17 +83,40 @@ sudo apt-get update >/dev/null 2>&1
 sudo apt-get install docker-ce -y >/dev/null 2>&1
 sudo systemctl enable docker >/dev/null 2>&1
 
-#install gitlab container
-echo "[TASK 10] Install gitlab container"
-sudo docker run --detach \
-  --hostname gitlab.example.com \
-  --publish 443:443 --publish 80:80 --publish 22222:22 \
-  --name gitlab \
-  --restart always \
-  --volume /srv/gitlab/config:/etc/gitlab \
-  --volume /srv/gitlab/logs:/var/log/gitlab \
-  --volume /srv/gitlab/data:/var/opt/gitlab \
-  gitlab/gitlab-ce:latest >/dev/null 2>&1
+#install docker-compose 
+echo "[TASK 10] Install docker-compose"
+sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose >/dev/null 2>&1
+sudo chmod +x /usr/local/bin/docker-compose >/dev/null 2>&1
+
+#install gitea
+echo "[TASK 11] Install gitea"
+cat <<EOF > docker-compose.yml
+version: "2"
+
+networks:
+  gitea:
+    external: false
+
+services:
+  server:
+    image: gitea/gitea:latest
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    networks:
+      - gitea
+    volumes:
+      - ./gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "222:22"
+      - "8080:3000"
+      - "2221:22"
+EOF
+sudo docker-compose up -d >/dev/null 2>&1
 
 #install nginx-ingress
 echo "[TASK 11] Install nginx-ingress"
