@@ -139,6 +139,7 @@ sudo bash -c "cat >>/etc/exports<<EOF
 EOF"
 sudo systemctl enable nfs-server
 sudo systemctl start nfs-server
+sudo /etc/init.d/nfs-kernel-server restart
 sudo exportfs -v
 
 #install nfs-provisioner
