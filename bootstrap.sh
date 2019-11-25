@@ -3,11 +3,11 @@
 # Update hosts file
 echo "[TASK 1] Update /etc/hosts file"
 cat >>/etc/hosts<<EOF
-192.168.192.10 jumpingvm.example.com jumpingvm
-192.168.192.10 gitea.example.com gitea
-192.168.192.100 kmaster.example.com kmaster
-192.168.192.101 kworker1.example.com kworker1
-192.168.192.102 kworker2.example.com kworker2
+10.105.231.13 jumpingvm.example.com jumpingvm
+10.105.231.13 gitea.example.com gitea
+10.105.231.150 kmaster.example.com kmaster
+10.105.231.151 kworker1.example.com kworker1
+10.105.231.152 kworker2.example.com kworker2
 EOF
 
 # Install docker from Docker-ce repository
@@ -74,6 +74,10 @@ systemctl reload sshd
 # Set Root password
 echo "[TASK 12] Set root password"
 echo "kubeadmin" | passwd --stdin root >/dev/null 2>&1
+
+# Install nfs client
+echo "[TASK 13] Install nfs client"
+sudo yum install nfs-utils -y >/dev/null 2>&1
 
 # Update vagrant user's bashrc file
 echo "export TERM=xterm" >> /etc/bashrc
