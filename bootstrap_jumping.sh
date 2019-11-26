@@ -88,42 +88,30 @@ echo "[TASK 10] Install docker-compose"
 sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose >/dev/null 2>&1
 sudo chmod +x /usr/local/bin/docker-compose >/dev/null 2>&1
 
-#install gitea
+#install gitlab
 echo "[TASK 11] Install gitea"
 cat <<EOF > docker-compose.yml
-version: "2"
-
-networks:
-  gitea:
-    external: false
-
-services:
-  server:
-    image: gitea/gitea:latest
-    environment:
-      - USER_UID=1000
-      - USER_GID=1000
-    restart: always
-    networks:
-      - gitea
-    volumes:
-      - ./gitea:/data
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-    ports:
-      - "3000:3000"
-      - "222:22"
-      - "80:3000"
-      - "2221:22"
+web:
+  image: 'gitlab/gitlab-ce:latest'
+  restart: always
+  hostname: 'gitlab.example.com'
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url 'https://gitlab.example.com'
+  ports:
+    - '80:80'
+    - '443:443'
+    - '30022:22'
+  volumes:
+    - '/srv/gitlab/config:/etc/gitlab'
+    - '/srv/gitlab/logs:/var/log/gitlab'
+    - '/srv/gitlab/data:/var/opt/gitlab'
 EOF
+sudo mkdir /srv/gitlab/config -p
+sudo mkdir /srv/gitlab/logs -p
+sudo mkdir /gitlab/data -p
+sudo setfacl -Rm default:group:docker:rwx /srv/gitlab
 sudo docker-compose up -d >/dev/null 2>&1
-cat <<EOF > post_install_gitea.sh 
-sed -i 's/SSH_DOMAIN       = localhost/SSH_DOMAIN       = gitea.example.com/g' /home/vagrant/gitea/gitea/conf/app.ini
-sed -i 's/ROOT_URL         = http:\/\/localhost:3000\//ROOT_URL         = http:\/\/gitea.example.com\//g' /home/vagrant/gitea/gitea/conf/app.ini
-sed -i 's/DOMAIN           =/DOMAIN           = example.com/g' /home/vagrant/gitea/gitea/conf/app.ini
-sudo docker-compose stop
-sudo docker-compose up -d
-EOF
 
 #install nginx-ingress
 echo "[TASK 12] Install nginx-ingress"
@@ -259,9 +247,11 @@ spec:
             path: /srv/nfs/kubedata
 EOF
 
-#remove firewall
-echo "[TASK 15] remove firewall"
-sudo apt-get remove iptables -y >/dev/null 2>&1
+#rconfiguring firewall
+echo "[TASK 15] configuring firewall rules for nfs"
+sudo iptables -F >/dev/null 2>&1
+sudo route delete default gw 10.0.2.2
+sudo systemctl restart docker
 
 echo "Ready..."
 
