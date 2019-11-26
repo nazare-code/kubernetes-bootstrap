@@ -18,8 +18,7 @@ sudo apt-get install sshpass >/dev/null 2>&1
 
 #installing kubectl
 echo "[TASK 3] Install kubectl"
-#sudo snap install kubectl --classic
-sudo snap install helm --channel=2.16/stable --classic
+sudo snap install kubectl --classic
 
 # Copy Kube admin config
 echo "[TASK 4] Copy kube admin config to Vagrant user .kube directory"
@@ -29,7 +28,8 @@ sudo chown -R vagrant:vagrant /home/vagrant/.kube
 
 #installing helm
 echo "[TASK 5] Install helm"
-sudo snap install helm --classic
+#sudo snap install helm --classic
+sudo snap install helm --channel=2.16/stable --classic
 
 #Installing tiller
 echo "[TASK 6] Install tiller"
