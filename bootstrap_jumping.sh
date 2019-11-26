@@ -4,7 +4,7 @@
 echo "[TASK 1] Update /etc/hosts file"
 sudo bash -c "cat >>/etc/hosts<<EOF
 10.105.231.13 jumping.example.com jumpingvm
-10.105.231.13 gitea.example.com gitea
+10.105.231.13 gitlab.example.com gitlab
 10.105.231.150 kmaster.example.com kmaster
 10.105.231.151 kworker1.example.com kworker1
 10.105.231.152 kworker2.example.com kworker2
@@ -18,7 +18,8 @@ sudo apt-get install sshpass >/dev/null 2>&1
 
 #installing kubectl
 echo "[TASK 3] Install kubectl"
-sudo snap install kubectl --classic
+#sudo snap install kubectl --classic
+sudo snap install helm --channel=2.16/stable --classic
 
 # Copy Kube admin config
 echo "[TASK 4] Copy kube admin config to Vagrant user .kube directory"
@@ -89,7 +90,7 @@ sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-c
 sudo chmod +x /usr/local/bin/docker-compose >/dev/null 2>&1
 
 #install gitlab
-echo "[TASK 11] Install gitea"
+echo "[TASK 11] Install gitlab"
 cat <<EOF > docker-compose.yml
 web:
   image: 'gitlab/gitlab-ce:latest'
