@@ -17,3 +17,7 @@ su - vagrant -c "kubectl create -f https://docs.projectcalico.org/v3.9/manifests
 # Generate Cluster join command
 echo "[TASK 4] Generate and save cluster join command to /joincluster.sh"
 kubeadm token create --print-join-command > /joincluster.sh
+
+# Patch deprecated API
+echo "[TASK 5] Patch deprecated API"
+sudo sed -i'.bak' '/^    - --tls-private-key-file=\/etc\/kubernetes\/pki\/apiserver.key.*/a\    \- --runtime-config=apps\/v1beta1=true,extensions\/v1beta1\/deployments=true' /etc/kubernetes/manifests/kube-apiserver.yaml

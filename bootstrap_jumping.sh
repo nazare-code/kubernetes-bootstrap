@@ -248,11 +248,16 @@ spec:
             path: /srv/nfs/kubedata
 EOF
 
-#rconfiguring firewall
+#configuring firewall
 echo "[TASK 15] configuring firewall rules for nfs"
 sudo iptables -F >/dev/null 2>&1
 sudo route delete default gw 10.0.2.2
 sudo systemctl restart docker
+
+#install jx
+echo "[TASK 16]" Install jx
+sudo curl -L "https://github.com/jenkins-x/jx/releases/download/$(curl --silent "https://github.com/jenkins-x/jx/releases/latest" | sed 's#.*tag/\(.*\)\".*#\1#')/jx-linux-amd64.tar.gz" | tar xzv "jx"
+sudo mv jx /usr/local/bin
 
 echo "Ready..."
 
