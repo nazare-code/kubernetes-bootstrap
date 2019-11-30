@@ -29,7 +29,12 @@ sudo chown -R vagrant:vagrant /home/vagrant/.kube
 #installing helm
 echo "[TASK 5] Install helm"
 #sudo snap install helm --classic
-sudo snap install helm --channel=2.16/stable --classic
+sudo curl -L https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz -o helm-v2.14.3.tar.gz >/dev/null 2>&1
+sudo tar xvf helm-v2.14.3.tar.gz >/dev/null 2>&1
+sudo mv linux-amd64/helm /usr/bin/
+sudo mv linux-amd64/tiller /usr/bin/
+sudo rm -Rf linux-amd64/ helm-v2.14.3.tar.gz
+#sudo snap install helm --channel=2.16/stable --classic
 
 #Installing tiller
 echo "[TASK 6] Install tiller"
@@ -256,7 +261,7 @@ sudo systemctl restart docker
 
 #install jx
 echo "[TASK 16]" Install jx
-sudo curl -L "https://github.com/jenkins-x/jx/releases/download/$(curl --silent "https://github.com/jenkins-x/jx/releases/latest" | sed 's#.*tag/\(.*\)\".*#\1#')/jx-linux-amd64.tar.gz" | tar xzv "jx"
+sudo curl -L "https://github.com/jenkins-x/jx/releases/download/$(curl --silent "https://github.com/jenkins-x/jx/releases/latest" | sed 's#.*tag/\(.*\)\".*#\1#')/jx-linux-amd64.tar.gz" | tar xzv "jx" >/dev/null 2>&1
 sudo mv jx /usr/local/bin
 
 echo "Ready..."
