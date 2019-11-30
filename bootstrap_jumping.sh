@@ -38,7 +38,8 @@ sudo rm -Rf linux-amd64/ helm-v2.14.3.tar.gz
 
 #Installing tiller
 echo "[TASK 6] Install tiller"
-helm init
+helm init --output yaml | sed 's@apiVersion: extensions/v1beta1@apiVersion: apps/v1@' | sed 's@  replicas: 1@  replicas: 1\n  selector: {"matchLabels": {"app": "helm", "name": "tiller"}}@' | kubectl apply -f -
+
 
 #Create The Tiller Service Account
 echo "[TASK 7] Install Tiller Service Account"
