@@ -272,5 +272,31 @@ tar xvf draft.tar.gz >/dev/null 2>&1
 sudo mv linux-amd64/draft /usr/bin
 sudo rm -Rf linux-amd64
 
+#configure dashboard
+echo "[TASK 17]" Prepare kubernetes dashboard 
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta6/aio/deploy/recommended.yaml
+cat <<EOF | kubectl apply -f -
+apiVersion: v1                          
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOF
+cat <<EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:                         
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+EOF
+kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')>dashboard-secret.config
+
 echo "Ready..."
 
