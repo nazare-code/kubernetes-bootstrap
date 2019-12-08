@@ -292,7 +292,7 @@ roleRef:
   kind: ClusterRole
   name: cluster-admin
 subjects:
-  - kind: ServiceAccount
+- kind: ServiceAccount
   name: admin-user
   namespace: kubernetes-dashboard
 EOF
