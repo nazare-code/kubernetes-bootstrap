@@ -29,12 +29,12 @@ sudo chown -R vagrant:vagrant /home/vagrant/.kube
 #installing helm
 echo "[TASK 5] Install helm"
 #sudo snap install helm --classic
-#sudo curl -L https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz -o helm-v2.14.3.tar.gz >/dev/null 2>&1
-#sudo tar xvf helm-v2.14.3.tar.gz >/dev/null 2>&1
-#sudo mv linux-amd64/helm /usr/bin/
-#sudo mv linux-amd64/tiller /usr/bin/
-#sudo rm -Rf linux-amd64/ helm-v2.14.3.tar.gz
-sudo snap install helm --channel=2.16/stable --classic
+sudo curl -L https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz -o helm-v2.14.3.tar.gz >/dev/null 2>&1
+sudo tar xvf helm-v2.14.3.tar.gz >/dev/null 2>&1
+sudo mv linux-amd64/helm /usr/bin/
+sudo mv linux-amd64/tiller /usr/bin/
+sudo rm -Rf linux-amd64/ helm-v2.14.3.tar.gz
+#sudo snap install helm --channel=2.16/stable --classic
 
 #Installing tiller
 echo "[TASK 6] Install tiller"
