@@ -3,11 +3,11 @@
 # Update hosts file
 echo "[TASK 1] Update /etc/hosts file"
 sudo bash -c "cat >>/etc/hosts<<EOF
-10.105.231.13 jumping.example.com jumpingvm
-10.105.231.13 gitlab.example.com gitlab
-10.105.231.150 kmaster.example.com kmaster
-10.105.231.151 kworker1.example.com kworker1
-10.105.231.152 kworker2.example.com kworker2
+192.168.1.213 jumpbox.nzr.io jumpbox
+192.168.1.213 gitlab.nzr.io gitlab
+192.168.1.200 master.nzr.io master
+192.168.1.201 node1.nzr.io node1
+192.168.1.202 node2.nzr.io node2
 EOF"
 
 #installing sshpass
@@ -23,7 +23,7 @@ sudo snap install kubectl --classic
 # Copy Kube admin config
 echo "[TASK 4] Copy kube admin config to Vagrant user .kube directory"
 mkdir /home/vagrant/.kube
-sshpass -p "kubeadmin" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@10.105.231.150:/home/vagrant/.kube/config /home/vagrant/.kube/config 2>/dev/null
+sshpass -p "kubeadmin" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.1.200:/home/vagrant/.kube/config /home/vagrant/.kube/config 2>/dev/null
 sudo chown -R vagrant:vagrant /home/vagrant/.kube
 
 #installing helm
@@ -77,7 +77,7 @@ data:
     - name: default
       protocol: layer2
       addresses:
-      - 10.105.231.240-10.105.231.254
+      - 192.168.1.220-192.168.1.235
 EOF
 
 #install docker engine
@@ -101,10 +101,10 @@ cat <<EOF > docker-compose.yml
 web:
   image: 'gitlab/gitlab-ce:latest'
   restart: always
-  hostname: 'gitlab.example.com'
+  hostname: 'gitlab.nzr.io'
   environment:
     GITLAB_OMNIBUS_CONFIG: |
-      external_url 'https://gitlab.example.com'
+      external_url 'https://gitlab.nzr.io'
   ports:
     - '80:80'
     - '443:443'
@@ -203,7 +203,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: managed-nfs-storage
-provisioner: example.com/nfs
+provisioner: nzr.io/nfs
 parameters:
   archiveOnDelete: "false"
 ---
@@ -213,7 +213,7 @@ metadata:
   name: managed-nfs-storage
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
-provisioner: example.com/nfs
+provisioner: nzr.io/nfs
 parameters:
   archiveOnDelete: "false"
 ---
@@ -242,15 +242,15 @@ spec:
               mountPath: /persistentvolumes
           env:
             - name: PROVISIONER_NAME
-              value: example.com/nfs
+              value: nzr.io/nfs
             - name: NFS_SERVER
-              value: 10.105.231.13
+              value: 192.168.1.213
             - name: NFS_PATH
               value: /srv/nfs/kubedata
       volumes:
         - name: nfs-client-root
           nfs:
-            server: 10.105.231.13
+            server: 192.168.1.213
             path: /srv/nfs/kubedata
 EOF
 

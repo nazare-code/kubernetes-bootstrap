@@ -6,50 +6,50 @@ ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 Vagrant.configure(2) do |config|
 
   # Kubernetes Master Server
-  config.vm.define "kmaster" do |kmaster|
-    kmaster.vm.box = "centos/7"
-    kmaster.vm.hostname = "kmaster.example.com"
-    kmaster.vm.network "public_network", ip: "10.105.231.150"
-    kmaster.vm.provision "shell", run: "always", inline: "sudo ip route add 0.0.0.0/0 via 10.105.231.1"
-    kmaster.vm.provider "virtualbox" do |v|
-      v.name = "kmaster"
-      v.memory = 4096
-      v.cpus = 4
+  config.vm.define "master" do |masternode|
+    masternode.vm.box = "centos/7"
+    masternode.vm.hostname = "master.nzr.io"
+    masternode.vm.network "public_network", ip: "192.168.1.200"
+    masternode.vm.provision "shell", run: "always", inline: "sudo ip route add 0.0.0.0/0 via 192.168.1.1"
+    masternode.vm.provider "virtualbox" do |v|
+      v.name = "master"
+      v.memory = 1024
+      v.cpus = 1
     end
-    kmaster.vm.provision "shell", path: "bootstrap.sh"
-    kmaster.vm.provision "shell", path: "bootstrap_kmaster.sh"
+    master.vm.provision "shell", path: "bootstrap.sh"
+    master.vm.provision "shell", path: "bootstrap_master.sh"
   end
 
-  NodeCount = 2
+  NodeCount = 1
 
   # Kubernetes Worker Nodes
   (1..NodeCount).each do |i|
-    config.vm.define "kworker#{i}" do |workernode|
+    config.vm.define "node#{i}" do |workernode|
       workernode.vm.box = "centos/7"
-      workernode.vm.hostname = "kworker#{i}.example.com"
-      workernode.vm.network "public_network", ip: "10.105.231.15#{i}"
-      workernode.vm.provision "shell", run: "always", inline: "sudo ip route add 0.0.0.0/0 via 10.105.231.1"
+      workernode.vm.hostname = "node#{i}.nzr.io"
+      workernode.vm.network "public_network", ip: "192.168.1.20#{i}"
+      workernode.vm.provision "shell", run: "always", inline: "sudo ip route add 0.0.0.0/0 via 192.168.1.1"
       workernode.vm.provider "virtualbox" do |v|
-        v.name = "kworker#{i}"
-        v.memory = 4096
-        v.cpus = 4
+        v.name = "node#{i}"
+        v.memory = 1024
+        v.cpus = 1
       end
      workernode.vm.provision "shell", path: "bootstrap.sh"
-     workernode.vm.provision "shell", path: "bootstrap_kworker.sh"
+     workernode.vm.provision "shell", path: "bootstrap_node.sh"
     end
   end
 
-  # Kubernetes Jumping VM
+  # Kubernetes Jumpbox VM
     config.vm.define "jumpingvm" do |node|
       node.vm.box = "ubuntu/bionic64"
-      node.vm.hostname = "jumpingvm.example.com"
-      node.vm.network "public_network", ip: "10.105.231.13"
-      node.vm.provision "shell", run: "always", inline: "sudo route add default gw 10.105.231.1 enp0s8"
+      node.vm.hostname = "jumpbox.nzr.io"
+      node.vm.network "public_network", ip: "192.168.1.213"
+      node.vm.provision "shell", run: "always", inline: "sudo route add default gw 192.168.1.1 enp0s8"
       node.vm.provider "virtualbox" do |v|
-        v.name = "jumpingvm"
-        v.memory = 4096
-        v.cpus = 4
+        v.name = "jumpbox"
+        v.memory = 1024
+        v.cpus = 1
       end
-      node.vm.provision "shell", path: "bootstrap_jumping.sh", privileged: false
+      node.vm.provision "shell", path: "bootstrap_jumpbox.sh", privileged: false
       end
 end

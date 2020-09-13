@@ -3,12 +3,12 @@
 # Update hosts file
 echo "[TASK 1] Update /etc/hosts file"
 cat >>/etc/hosts<<EOF
-10.105.231.13 jumpingvm.example.com jumpingvm
-10.105.231.13 gitea.example.com gitea
-10.105.231.150 kmaster.example.com kmaster
-10.105.231.151 kworker1.example.com kworker1
-10.105.231.152 kworker2.example.com kworker2
-EOF
+192.168.1.213 jumpbox.nzr.io jumpbox
+192.168.1.213 gitlab.nzr.io gitlab
+192.168.1.200 master.nzr.io master
+192.168.1.201 node1.nzr.io node1
+192.168.1.202 node2.nzr.io node2
+EOF"
 
 # Install docker from Docker-ce repository
 echo "[TASK 2] Install docker container engine"
